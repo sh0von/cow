@@ -61,10 +61,7 @@ const sendMainMenu = (chatId, userId) => {
         }
     });
 };
-// Command to display developer info and GitHub repository
-bot.onText(/\/dev/, (msg) => {
-    bot.sendMessage(msg.chat.id, `I'm developed by Shovon. You can find my GitHub repository at: https://github.com/sh0von/cow`);
-});
+
 // Handle messages from the custom keyboard
 bot.on('message', (msg) => {
     const userId = msg.from.id;
@@ -104,7 +101,12 @@ bot.on('message', (msg) => {
         } else {
             bot.sendMessage(chatId, `Tuition '${tuitionName}' not found.`);
         }
-    } else {
+    }
+    else if (text === 'ℹ️ Developer Info') {
+        // Handle developer info button press
+        bot.sendMessage(chatId, `I'm developed by Shovon. You can find my GitHub repository at: https://github.com/sh0von/cow`);
+    }
+    else {
         const tuitionName = text.match(/^📅 (.*?) \(\d+ days\)$/);
         if (tuitionName) {
             const tuition = userData[userId].tuitions.find(t => t.name === tuitionName[1]);
