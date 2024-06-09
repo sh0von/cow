@@ -14,7 +14,7 @@
 # Ignore package manager directories
 /node_modules/
 /vendor/
-
+userData.json
 # Ignore operating system files
 .DS_Store
 Thumbs.db
