@@ -63,7 +63,7 @@ const sendMainMenu = (chatId, userId) => {
 };
 
 // Handle messages from the custom keyboard
-bot.on('message', (msg) => {
+bot.on('message', async (msg) => {
     const userId = msg.from.id;
     const chatId = msg.chat.id;
     const text = msg.text;
@@ -73,21 +73,33 @@ bot.on('message', (msg) => {
         saveUserData();
     }
 
+    try {
+        // Execute command handling logic asynchronously
+        await handleCommand(userId, chatId, text);
+    } catch (error) {
+        console.error('An error occurred:', error);
+        bot.sendMessage(chatId, 'Sorry, something went wrong while processing your command.');
+    }
+});
+
+async function handleCommand(userId, chatId, text) {
+    // Your command handling logic goes here
+    // For example, you can check the command text and perform different actions accordingly
+
     if (text === '➕ Add Tuition') {
         bot.sendMessage(chatId, 'Please enter the name of the tuition class to add:');
-        bot.once('message', (response) => {
-            if (response.from.id === userId) { // Ensure the response is from the same user
-                const tuitionName = response.text.trim();
-                if (tuitionName.length > 0) {
-                    const tuitionId = Math.floor(Math.random() * 1000); // Generate a random ID
-                    userData[userId].tuitions.push({ id: tuitionId, name: tuitionName, days: 0 });
-                    saveUserData();
-                    sendMainMenu(chatId, userId);
-                } else {
-                    bot.sendMessage(chatId, 'Tuition name cannot be empty. Please try again.');
-                }
+        const response = await bot.once('message');
+        if (response.from.id === userId) {
+            const tuitionName = response.text.trim();
+            if (tuitionName.length > 0) {
+                const tuitionId = Math.floor(Math.random() * 1000); // Generate a random ID
+                userData[userId].tuitions.push({ id: tuitionId, name: tuitionName, days: 0 });
+                saveUserData();
+                sendMainMenu(chatId, userId);
+            } else {
+                bot.sendMessage(chatId, 'Tuition name cannot be empty. Please try again.');
             }
-        });
+        }
     } else if (text === '🏠 Main Menu') {
         sendMainMenu(chatId, userId);
     } else if (text.startsWith('❌ Delete')) {
@@ -101,7 +113,7 @@ bot.on('message', (msg) => {
         } else {
             bot.sendMessage(chatId, `Tuition '${tuitionName}' not found.`);
         }
-    }else if (text === 'ℹ️ About') {
+    } else if (text === 'ℹ️ About') {
         // Display developer information and total users
         const totalUsers = Object.keys(userData).length;
         const developerInfo = `
@@ -125,7 +137,7 @@ bot.on('message', (msg) => {
             }
         }
     }
-});
+};
 
 // Save user data periodically to avoid data loss
 setInterval(saveUserData, 60000);
