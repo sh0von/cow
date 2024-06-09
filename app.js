@@ -50,7 +50,8 @@ const sendMainMenu = (chatId, userId) => {
     const buttons = [
         ...tuitionButtons,
         [{ text: '➕ Add Tuition' }],
-        [{ text: '🏠 Main Menu' }]
+        [{ text: '🏠 Main Menu' }],
+        [{ text: 'ℹ️ Developer Info' }]
     ];
     bot.sendMessage(chatId, menuText, {
         reply_markup: {
@@ -60,7 +61,10 @@ const sendMainMenu = (chatId, userId) => {
         }
     });
 };
-
+// Command to display developer info and GitHub repository
+bot.onText(/\/dev/, (msg) => {
+    bot.sendMessage(msg.chat.id, `I'm developed by Shovon. You can find my GitHub repository at: https://github.com/sh0von/cow`);
+});
 // Handle messages from the custom keyboard
 bot.on('message', (msg) => {
     const userId = msg.from.id;
