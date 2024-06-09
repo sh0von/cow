@@ -51,7 +51,7 @@ const sendMainMenu = (chatId, userId) => {
         ...tuitionButtons,
         [{ text: '➕ Add Tuition' }],
         [{ text: '🏠 Main Menu' }],
-        [{ text: 'ℹ️ Developer Info' }]
+        [{ text: 'ℹ️ About' }]
     ];
     bot.sendMessage(chatId, menuText, {
         reply_markup: {
@@ -101,12 +101,17 @@ bot.on('message', (msg) => {
         } else {
             bot.sendMessage(chatId, `Tuition '${tuitionName}' not found.`);
         }
+    }else if (text === 'ℹ️ About') {
+        // Display developer information and total users
+        const totalUsers = Object.keys(userData).length;
+        const developerInfo = `
+        Developer: Shovon
+        GitHub Repository: https://github.com/sh0von/cow
+        Total Users: ${totalUsers}
+        `;
+        bot.sendMessage(chatId, developerInfo);
     }
-    else if (text === 'ℹ️ Developer Info') {
-        // Handle developer info button press
-        bot.sendMessage(chatId, `I'm developed by Shovon. You can find my GitHub repository at: https://github.com/sh0von/cow`);
-    }
-    else {
+     else {
         const tuitionName = text.match(/^📅 (.*?) \(\d+ days\)$/);
         if (tuitionName) {
             const tuition = userData[userId].tuitions.find(t => t.name === tuitionName[1]);
